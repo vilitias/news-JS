@@ -1,5 +1,3 @@
-import { SourceData } from './controller';
-
 interface LoaderOptions {
     [key: string]: string | number;
 }
