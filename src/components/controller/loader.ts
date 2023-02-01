@@ -1,7 +1,9 @@
+import { SourceData } from './controller';
+
 interface LoaderOptions {
     [key: string]: string | number;
 }
-export type ResponseCallback = (arg: any) => void;
+export type ResponseCallback<Data> = (arg: Data) => void;
 
 class Loader {
     baseLink: string;
@@ -12,8 +14,11 @@ class Loader {
         this.options = options;
     }
 
-    getResp({ endpoint, options = {} }: { endpoint: string; options?: LoaderOptions }, callback: ResponseCallback) {
-        this.load('GET', endpoint, callback, options);
+    getResp<ResponseData>(
+        { endpoint, options = {} }: { endpoint: string; options?: LoaderOptions },
+        callback: ResponseCallback<ResponseData>
+    ) {
+        this.load<ResponseData>('GET', endpoint, callback, options);
     }
 
     errorHandler(res: Response) {
@@ -37,7 +42,7 @@ class Loader {
         return url.slice(0, -1);
     }
 
-    load(method: string, endpoint: string, callback: ResponseCallback, options = {}) {
+    load<Arg>(method: string, endpoint: string, callback: ResponseCallback<Arg>, options = {}) {
         fetch(this.makeUrl(options, endpoint), { method })
             .then(this.errorHandler)
             .then((res) => res.json())
